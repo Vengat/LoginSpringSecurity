@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/jee
+	                    http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+	                    http://www.springframework.org/schema/context 
+	                    http://www.springframework.org/schema/context/spring-context.xsd
+	                    http://www.springframework.org/schema/data/jpa
+	                    http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<context:component-scan base-package="com.auth.login"/>
+	
+	<!-- <jee:jndi-lookup id="dbDataSource"
+   		jndi-name="jdbc/DatabaseName"
+   		expected-type="javax.sql.DataSource" />  -->
+   		
+   	<!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+   	    <property name="dataSource" ref="dataSource" /> 
+   	    <property name="packagesToScan" value="com.auth.login.domain" />
+   	</bean>  -->
+   	<!-- <jpa:repositories base-package="com.auth.login.persistence.repository" />  -->
+   	
+   	<jpa:repositories base-package="com.auth.login.persistence.repository"  entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"/>
+   	
+   	<bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    	<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    	<property name="url" value="jdbc:mysql://localhost:3306/GameManager" />
+    	<property name="username" value="root" />
+    	<property name="password" value="root" />
+	</bean>
+   	
+   	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+   	
+   	<bean id="entityManagerFactory" class= "org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+  		<property name="dataSource" ref="dataSource" />
+  		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+  		<!-- <property name="persistenceUnitName" value="loginservices" />  -->
+	</bean>
+	
+	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+  		<property name="database" value="MYSQL" />
+  		<property name="showSql" value="true"/>
+ 		<property name="generateDdl" value="false"/>
+  		<property name="databasePlatform"
+            value="org.hibernate.dialect.MySQL5Dialect" />
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">      
+  		<property name="entityManagerFactory" ref="entityManagerFactory" />
+  		<property name="jpaDialect" ref="jpaDialect" />
+	</bean>
+	
+	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect" />
+            	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+	
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>	
+</beans>
